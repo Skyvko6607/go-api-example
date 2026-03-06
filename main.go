@@ -17,7 +17,7 @@ import (
 func main() {
 	r := gin.Default()
 
-	configFile, configErr := os.ReadFile("appsettings.toml")
+	configFile, configErr := os.ReadFile(".env")
 	if configErr != nil {
 		panic(configErr)
 	}
@@ -37,17 +37,21 @@ func main() {
 	}()
 
 	// User Service
-	repo := &repositories.UserRepository{MongoContext: mongoContext}
-	service := &services.UserService{Repo: repo}
-	handler := &handlers.UserHandler{Service: service}
+	userRepo := &repositories.UserRepository{MongoContext: mongoContext}
+	userService := &services.UserService{Repo: userRepo}
+	userHandler := &handlers.UserHandler{Service: userService}
 
 	// Index setup
-	err := repo.EnsureUserIndexes(context.Background())
-	if err != nil {
-		panic(err)
+	userIndexErr := userRepo.EnsureIndexes(context.Background())
+	if userIndexErr != nil {
+		panic(userIndexErr)
 	}
 
-	r.GET("/users/:userNameOrEmail", handler.GetUser)
-	r.POST("/users/create/:userName/:email", handler.CreateUser)
+	productRepo := &repositories.ProductRepository{MongoContext: mongoContext}
+	productService := &services.ProductService{Repo: productRepo}
+	productHandler := &handlers.ProductHandler{Service: productService}
+
+	userHandler.SetupEndpoints(r)
+	productHandler.SetupEndpoints(r)
 	r.Run(":8080")
 }

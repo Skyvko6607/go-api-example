@@ -19,7 +19,7 @@ type UserRepository struct {
 func (r *UserRepository) FindByUserNameOrEmail(userName string, email string) (models.User, error) {
 	filter := bson.M{
 		"$or": []bson.M{
-			{"userName": userName},
+			{"user_name_lower": strings.ToLower(userName)},
 			{"email": email},
 		},
 	}
@@ -57,14 +57,13 @@ func (r *UserRepository) CreateUser(userName string, email string) (models.User,
 		ID:            bson.NewObjectID(),
 		UserName:      userName,
 		UserNameLower: strings.ToLower(userName),
-		Email:         email,
-		EmailLower:    strings.ToLower(email),
+		Email:         strings.ToLower(email),
 	}
 	_, err2 := collection.InsertOne(context.TODO(), user, options.InsertOne())
 	return user, err2
 }
 
-func (r *UserRepository) EnsureUserIndexes(ctx context.Context) error {
+func (r *UserRepository) EnsureIndexes(ctx context.Context) error {
 	collection := r.MongoContext.Database.Collection("users")
 	idx := mongo.IndexModel{
 		Keys: bson.D{{Key: "email", Value: 1}},
@@ -78,7 +77,7 @@ func (r *UserRepository) EnsureUserIndexes(ctx context.Context) error {
 	}
 
 	idx2 := mongo.IndexModel{
-		Keys: bson.D{{Key: "userName", Value: 1}},
+		Keys: bson.D{{Key: "user_name_lower", Value: 1}},
 		Options: options.Index().SetUnique(true).SetCollation(&options.Collation{
 			Locale:   "en",
 			Strength: 2,

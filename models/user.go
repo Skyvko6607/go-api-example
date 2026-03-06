@@ -2,14 +2,12 @@
 
 import "go.mongodb.org/mongo-driver/v2/bson"
 
+// UserNameLower is indexed and for case insensitive lookup
 type User struct {
-	ID bson.ObjectID `bson:"_id,omitempty" json:"id"`
-
-	UserName      string `bson:"userName,omitempty" json:"userName"`
-	UserNameLower string `bson:"userNameLower,omitempty"` // Index
-
-	Email      string `bson:"email,omitempty" json:"email"`
-	EmailLower string `bson:"emailLower,omitempty"` // Index
+	ID            bson.ObjectID `bson:"_id,omitempty" json:"id"`
+	UserName      string        `bson:"username,omitempty" json:"userName"`
+	UserNameLower string        `bson:"username_lower,omitempty"`
+	Email         string        `bson:"email,omitempty" json:"email"`
 }
 
 type UserDTO struct {

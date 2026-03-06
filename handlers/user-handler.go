@@ -11,6 +11,11 @@ type UserHandler struct {
 	Service *services.UserService
 }
 
+func (h *UserHandler) SetupEndpoints(r *gin.Engine) {
+	r.GET("/users/:userNameOrEmail", h.GetUser)
+	r.POST("/users/:userName/:email", h.CreateUser)
+}
+
 func (h *UserHandler) GetUser(c *gin.Context) {
 	userNameOrEmail := c.Param("userNameOrEmail")
 
