@@ -48,7 +48,7 @@ func (r *UserRepository) FindByBsonAndCollation(c *gin.Context, filter bson.M, c
 	return u, err
 }
 
-func (r *UserRepository) CreateUser(c *gin.Context, userName string, email string) (models.User, error) {
+func (r *UserRepository) CreateUser(c *gin.Context, userName string, email string, passwordHash string) (models.User, error) {
 	collection := r.MongoContext.Database.Collection("users")
 	_, err := r.FindByUserNameOrEmail(c, userName, email)
 	if err == nil {
@@ -60,6 +60,7 @@ func (r *UserRepository) CreateUser(c *gin.Context, userName string, email strin
 		UserName:      userName,
 		UserNameLower: strings.ToLower(userName),
 		Email:         strings.ToLower(email),
+		PasswordHash:  passwordHash,
 	}
 	_, err2 := collection.InsertOne(c, user, options.InsertOne())
 	return user, err2

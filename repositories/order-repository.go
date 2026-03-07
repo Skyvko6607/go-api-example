@@ -26,13 +26,13 @@ func (r *OrderRepository) CreateOrder(c *gin.Context, createOrderDto models.Crea
 			"$all": createOrderDto.Products,
 		},
 	}
-	results, err := productsCollection.Find(c, filter)
+	results, err := productsCollection.Find(c, &filter)
 	if err != nil {
 		return models.Order{}, err
 	}
+
 	var products []models.Product
-	err = results.All(c, &products)
-	if err != nil {
+	if err = results.All(c, &products); err != nil {
 		return models.Order{}, err
 	}
 
@@ -53,9 +53,11 @@ func (r *OrderRepository) CreateOrder(c *gin.Context, createOrderDto models.Crea
 	if err != nil {
 		return models.Order{}, err
 	}
+
 	if !result.Acknowledged {
 		return models.Order{}, errors.New("failed to create order")
 	}
+
 	order.ID = result.InsertedID.(bson.ObjectID)
 	return order, nil
 }
@@ -66,13 +68,15 @@ func (r *OrderRepository) GetOrdersByUserId(c *gin.Context, userId bson.ObjectID
 	results, err := collection.Find(c, models.Order{
 		UserID: userId,
 	})
+
 	if err != nil {
 		return []models.Order{}, err
 	}
-	allErr := results.All(c, &orders)
-	if allErr != nil {
+
+	if allErr := results.All(c, &orders); allErr != nil {
 		return []models.Order{}, allErr
 	}
+
 	return orders, nil
 }
 
@@ -84,6 +88,7 @@ func (r *OrderRepository) EnsureIndexes(ctx context.Context) error {
 	if _, err := collection.Indexes().CreateOne(ctx, idx); err != nil {
 		return err
 	}
+
 	idx = mongo.IndexModel{
 		Keys: bson.D{{Key: "product_ids", Value: 1}},
 	}

@@ -1,6 +1,7 @@
 ﻿package database
 
 import (
+	"github.com/Skyvko6607/go-api-learning/config"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -11,8 +12,8 @@ type MongoContext struct {
 	Database *mongo.Database
 }
 
-func NewMongoContext(mongoDbUri string) *MongoContext {
-	var client, err = mongo.Connect(options.Client().ApplyURI(mongoDbUri))
+func NewMongoContext(mongoDbUri *config.AppSettings) *MongoContext {
+	var client, err = mongo.Connect(options.Client().ApplyURI(mongoDbUri.MongoDatabase.Uri))
 	if err != nil {
 		panic(err)
 	}

@@ -23,24 +23,23 @@ func (r *ProductRepository) GetAllProducts(c *gin.Context) ([]models.Product, er
 	}
 
 	var products []models.Product
-	allErr := cursor.All(c, &products)
-	if allErr != nil {
+	if allErr := cursor.All(c, &products); allErr != nil {
 		return []models.Product{}, err
 	}
 
-	return products, allErr
+	return products, nil
 }
 
 func (r *ProductRepository) GetProductById(c *gin.Context, productId bson.ObjectID) (models.Product, error) {
 	collection := r.GetCollection()
 	var product models.Product
-	err := collection.FindOne(c, models.Product{
+
+	if err := collection.FindOne(c, models.Product{
 		ID: productId,
-	}).Decode(&product)
-	if err != nil {
+	}).Decode(&product); err != nil {
 		return models.Product{}, err
 	}
-	return product, err
+	return product, nil
 }
 
 func (r *ProductRepository) DeleteProduct(c *gin.Context, productId bson.ObjectID) error {

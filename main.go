@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 
+	"github.com/Skyvko6607/go-api-learning/auth"
 	"github.com/Skyvko6607/go-api-learning/config"
 	"github.com/Skyvko6607/go-api-learning/database"
 	"github.com/Skyvko6607/go-api-learning/handlers"
@@ -29,18 +30,24 @@ func main() {
 		panic(err)
 	}
 
-	mongoContext := database.NewMongoContext(cfg.MongoDatabase.Uri)
+	mongoContext := database.NewMongoContext(&cfg)
+	redisContext := database.NewRedisContext(&cfg)
 
 	defer func() {
 		if err := mongoContext.Client.Disconnect(context.Background()); err != nil {
 			panic(err)
 		}
+		if err := redisContext.Client.Close(); err != nil {
+			panic(err)
+		}
 	}()
+
+	auth := &auth.Auth{RedisContext: &redisContext, AppSettings: &cfg}
 
 	// User Setup
 	userRepo := &repositories.UserRepository{MongoContext: mongoContext}
 	userService := &services.UserService{Repo: userRepo}
-	userHandler := &handlers.UserHandler{Service: userService}
+	userHandler := &handlers.UserHandler{Service: userService, Auth: auth}
 	err = userRepo.EnsureIndexes(context.Background())
 	if err != nil {
 		panic(err)

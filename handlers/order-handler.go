@@ -23,16 +23,17 @@ func (h *OrderHandler) GetOrders(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	c.JSON(http.StatusOK, orders)
 }
 
 func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	var createOrderDto models.CreateOrderDTO
-	err := c.Bind(&createOrderDto)
-	if err != nil {
+	if err := c.Bind(&createOrderDto); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	order, err := h.Service.CreateOrder(c, createOrderDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
