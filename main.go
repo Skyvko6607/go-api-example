@@ -70,5 +70,8 @@ func main() {
 	}
 	orderHandler.SetupEndpoints(r)
 
+	authHandler := &handlers.AuthHandler{Auth: auth, Repo: userRepo, AppSettings: &cfg}
+	authHandler.SetupEndpoints(r)
+
 	r.Run(":8080")
 }
