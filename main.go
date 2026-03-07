@@ -1,13 +1,14 @@
 ﻿package main
 
 import (
-	"TestAPI/config"
-	"TestAPI/database"
-	"TestAPI/handlers"
-	"TestAPI/repositories"
-	"TestAPI/services"
 	"context"
 	"os"
+
+	"github.com/Skyvko6607/go-api-learning/config"
+	"github.com/Skyvko6607/go-api-learning/database"
+	"github.com/Skyvko6607/go-api-learning/handlers"
+	"github.com/Skyvko6607/go-api-learning/repositories"
+	"github.com/Skyvko6607/go-api-learning/services"
 
 	"github.com/gin-gonic/gin"
 
@@ -23,35 +24,44 @@ func main() {
 	}
 
 	var cfg config.AppSettings
-	tomlErr := toml.Unmarshal([]byte(configFile), &cfg)
-	if tomlErr != nil {
-		panic(tomlErr)
+	err := toml.Unmarshal([]byte(configFile), &cfg)
+	if err != nil {
+		panic(err)
 	}
 
 	mongoContext := database.NewMongoContext(cfg.MongoDatabase.Uri)
 
 	defer func() {
-		if err := mongoContext.Client.Disconnect(context.TODO()); err != nil {
+		if err := mongoContext.Client.Disconnect(context.Background()); err != nil {
 			panic(err)
 		}
 	}()
 
-	// User Service
+	// User Setup
 	userRepo := &repositories.UserRepository{MongoContext: mongoContext}
 	userService := &services.UserService{Repo: userRepo}
 	userHandler := &handlers.UserHandler{Service: userService}
-
-	// Index setup
-	userIndexErr := userRepo.EnsureIndexes(context.Background())
-	if userIndexErr != nil {
-		panic(userIndexErr)
+	err = userRepo.EnsureIndexes(context.Background())
+	if err != nil {
+		panic(err)
 	}
+	userHandler.SetupEndpoints(r)
 
+	// Product Setup
 	productRepo := &repositories.ProductRepository{MongoContext: mongoContext}
 	productService := &services.ProductService{Repo: productRepo}
 	productHandler := &handlers.ProductHandler{Service: productService}
-
-	userHandler.SetupEndpoints(r)
 	productHandler.SetupEndpoints(r)
+
+	// Order Setup
+	orderRepo := &repositories.OrderRepository{MongoContext: mongoContext}
+	orderService := &services.OrderService{Repo: orderRepo}
+	orderHandler := &handlers.OrderHandler{Service: orderService}
+	err = orderRepo.EnsureIndexes(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	orderHandler.SetupEndpoints(r)
+
 	r.Run(":8080")
 }

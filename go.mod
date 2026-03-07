@@ -1,4 +1,4 @@
-module TestAPI
+module github.com/Skyvko6607/go-api-learning
 
 go 1.26
 

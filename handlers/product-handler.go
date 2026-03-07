@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"TestAPI/models"
-	"TestAPI/services"
 	"net/http"
+
+	"github.com/Skyvko6607/go-api-learning/models"
+	"github.com/Skyvko6607/go-api-learning/services"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -20,7 +21,7 @@ func (h *ProductHandler) SetupEndpoints(r *gin.Engine) {
 }
 
 func (h *ProductHandler) GetAllProducts(c *gin.Context) {
-	products, err := h.Service.GetAllProducts()
+	products, err := h.Service.GetAllProducts(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -32,7 +33,7 @@ func (h *ProductHandler) AddProduct(c *gin.Context) {
 	var productDto models.ProductDTO
 	c.Bind(&productDto)
 
-	product, err := h.Service.AddProduct(productDto)
+	product, err := h.Service.AddProduct(c, productDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -48,7 +49,7 @@ func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	err := h.Service.DeleteProduct(productId)
+	err := h.Service.DeleteProduct(c, productId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

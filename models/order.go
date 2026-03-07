@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"TestAPI/enums"
+	"github.com/Skyvko6607/go-api-learning/enums"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
@@ -19,4 +19,36 @@ type Order struct {
 	CreatedAt   time.Time         `bson:"created_at,omitempty" json:"createdAt"`
 	FinalizedAt time.Time         `bson:"finalized_at,omitempty" json:"finalizedAt"`
 	PaymentType enums.PaymentType `bson:"payment_type,omitempty" json:"paymentType"`
+	BillingData BillingData       `bson:"billing_data,omitempty" json:"billingData"`
+}
+
+type OrderDTO struct {
+	ID          bson.ObjectID     `json:"id"`
+	Products    []ProductDTO      `json:"products"`
+	CreatedAt   time.Time         `bson:"created_at,omitempty" json:"createdAt"`
+	FinalizedAt time.Time         `bson:"finalized_at,omitempty" json:"finalizedAt"`
+	TotalPaid   float32           `bson:"total_paid,omitempty" json:"totalPaid"`
+	PaymentType enums.PaymentType `bson:"payment_type,omitempty" json:"paymentType"`
+}
+
+type CreateOrderDTO struct {
+	Products    []bson.ObjectID   `json:"productIds"`
+	PaymentType enums.PaymentType `json:"paymentType"`
+	BillingData BillingData       `json:"billingData"`
+}
+
+func (o *Order) AsDTO() OrderDTO {
+	var productsDTO []ProductDTO
+	for _, product := range o.Products {
+		productsDTO = append(productsDTO, product.AsDTO())
+	}
+
+	return OrderDTO{
+		ID:          o.ID,
+		Products:    productsDTO,
+		TotalPaid:   o.TotalPaid,
+		CreatedAt:   o.CreatedAt,
+		FinalizedAt: o.FinalizedAt,
+		PaymentType: o.PaymentType,
+	}
 }

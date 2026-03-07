@@ -1,8 +1,9 @@
 ﻿package handlers
 
 import (
-	"TestAPI/services"
 	"net/http"
+
+	"github.com/Skyvko6607/go-api-learning/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,7 @@ func (h *UserHandler) SetupEndpoints(r *gin.Engine) {
 func (h *UserHandler) GetUser(c *gin.Context) {
 	userNameOrEmail := c.Param("userNameOrEmail")
 
-	user, err := h.Service.GetUser(userNameOrEmail)
+	user, err := h.Service.GetUser(c, userNameOrEmail)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -31,7 +32,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	userName := c.Param("userName")
 	email := c.Param("email")
 
-	user, err := h.Service.CreateUser(userName, email)
+	user, err := h.Service.CreateUser(c, userName, email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

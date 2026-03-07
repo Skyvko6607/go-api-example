@@ -1,12 +1,14 @@
 ﻿package repositories
 
 import (
-	"TestAPI/database"
-	"TestAPI/models"
 	"context"
 	"errors"
 	"strings"
 
+	"github.com/Skyvko6607/go-api-learning/database"
+	"github.com/Skyvko6607/go-api-learning/models"
+
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -16,7 +18,7 @@ type UserRepository struct {
 	MongoContext *database.MongoContext
 }
 
-func (r *UserRepository) FindByUserNameOrEmail(userName string, email string) (models.User, error) {
+func (r *UserRepository) FindByUserNameOrEmail(c *gin.Context, userName string, email string) (models.User, error) {
 	filter := bson.M{
 		"$or": []bson.M{
 			{"user_name_lower": strings.ToLower(userName)},
@@ -25,10 +27,10 @@ func (r *UserRepository) FindByUserNameOrEmail(userName string, email string) (m
 	}
 	collation := &options.Collation{Locale: "en", Strength: 2}
 
-	return r.FindByBsonAndCollation(filter, collation)
+	return r.FindByBsonAndCollation(c, filter, collation)
 }
 
-func (r *UserRepository) FindByBsonAndCollation(filter bson.M, collation *options.Collation) (models.User, error) {
+func (r *UserRepository) FindByBsonAndCollation(c *gin.Context, filter bson.M, collation *options.Collation) (models.User, error) {
 	collection := r.MongoContext.Database.Collection("users")
 
 	var opts options.FindOneOptionsBuilder
@@ -41,14 +43,14 @@ func (r *UserRepository) FindByBsonAndCollation(filter bson.M, collation *option
 
 	var u models.User
 	err := collection.
-		FindOne(context.TODO(), filter, &opts).
+		FindOne(c, filter, &opts).
 		Decode(&u)
 	return u, err
 }
 
-func (r *UserRepository) CreateUser(userName string, email string) (models.User, error) {
+func (r *UserRepository) CreateUser(c *gin.Context, userName string, email string) (models.User, error) {
 	collection := r.MongoContext.Database.Collection("users")
-	_, err := r.FindByUserNameOrEmail(userName, email)
+	_, err := r.FindByUserNameOrEmail(c, userName, email)
 	if err == nil {
 		return models.User{}, errors.New("user already exists")
 	}
@@ -59,7 +61,7 @@ func (r *UserRepository) CreateUser(userName string, email string) (models.User,
 		UserNameLower: strings.ToLower(userName),
 		Email:         strings.ToLower(email),
 	}
-	_, err2 := collection.InsertOne(context.TODO(), user, options.InsertOne())
+	_, err2 := collection.InsertOne(c, user, options.InsertOne())
 	return user, err2
 }
 
@@ -76,13 +78,13 @@ func (r *UserRepository) EnsureIndexes(ctx context.Context) error {
 		return err
 	}
 
-	idx2 := mongo.IndexModel{
+	idx = mongo.IndexModel{
 		Keys: bson.D{{Key: "user_name_lower", Value: 1}},
 		Options: options.Index().SetUnique(true).SetCollation(&options.Collation{
 			Locale:   "en",
 			Strength: 2,
 		}),
 	}
-	_, err := collection.Indexes().CreateOne(ctx, idx2)
+	_, err := collection.Indexes().CreateOne(ctx, idx)
 	return err
 }
