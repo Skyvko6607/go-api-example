@@ -2,7 +2,8 @@ package config
 
 type AppSettings struct {
 	MongoDatabase struct {
-		Uri string `toml:"uri"`
+		Uri      string `toml:"uri"`
+		Database string `toml:"database"`
 	} `toml:"mongo-database"`
 	Redis struct {
 		Address  string `toml:"address"`
