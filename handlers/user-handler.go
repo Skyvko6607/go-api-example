@@ -3,8 +3,8 @@
 import (
 	"net/http"
 
-	"github.com/Skyvko6607/go-api-learning/auth"
-	"github.com/Skyvko6607/go-api-learning/services"
+	"github.com/Skyvko6607/go-api-example/auth"
+	"github.com/Skyvko6607/go-api-example/services"
 
 	"github.com/gin-gonic/gin"
 )

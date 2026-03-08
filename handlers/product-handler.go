@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Skyvko6607/go-api-learning/models"
-	"github.com/Skyvko6607/go-api-learning/services"
+	"github.com/Skyvko6607/go-api-example/models"
+	"github.com/Skyvko6607/go-api-example/services"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"

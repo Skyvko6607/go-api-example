@@ -4,12 +4,12 @@ import (
 	"context"
 	"os"
 
-	"github.com/Skyvko6607/go-api-learning/auth"
-	"github.com/Skyvko6607/go-api-learning/config"
-	"github.com/Skyvko6607/go-api-learning/database"
-	"github.com/Skyvko6607/go-api-learning/handlers"
-	"github.com/Skyvko6607/go-api-learning/repositories"
-	"github.com/Skyvko6607/go-api-learning/services"
+	"github.com/Skyvko6607/go-api-example/auth"
+	"github.com/Skyvko6607/go-api-example/config"
+	"github.com/Skyvko6607/go-api-example/database"
+	"github.com/Skyvko6607/go-api-example/handlers"
+	"github.com/Skyvko6607/go-api-example/repositories"
+	"github.com/Skyvko6607/go-api-example/services"
 
 	"github.com/gin-gonic/gin"
 

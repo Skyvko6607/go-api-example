@@ -1,7 +1,7 @@
 ﻿package database
 
 import (
-	"github.com/Skyvko6607/go-api-learning/config"
+	"github.com/Skyvko6607/go-api-example/config"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"

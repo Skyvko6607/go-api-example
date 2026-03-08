@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/Skyvko6607/go-api-learning/enums"
+	"github.com/Skyvko6607/go-api-example/enums"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 )

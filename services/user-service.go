@@ -1,8 +1,8 @@
 ﻿package services
 
 import (
-	"github.com/Skyvko6607/go-api-learning/models"
-	"github.com/Skyvko6607/go-api-learning/repositories"
+	"github.com/Skyvko6607/go-api-example/models"
+	"github.com/Skyvko6607/go-api-example/repositories"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"

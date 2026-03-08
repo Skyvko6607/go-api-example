@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/Skyvko6607/go-api-learning/config"
+	"github.com/Skyvko6607/go-api-example/config"
 	"github.com/redis/go-redis/v9"
 )
 

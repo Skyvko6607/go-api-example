@@ -3,10 +3,10 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Skyvko6607/go-api-learning/auth"
-	"github.com/Skyvko6607/go-api-learning/config"
-	"github.com/Skyvko6607/go-api-learning/models"
-	"github.com/Skyvko6607/go-api-learning/repositories"
+	"github.com/Skyvko6607/go-api-example/auth"
+	"github.com/Skyvko6607/go-api-example/config"
+	"github.com/Skyvko6607/go-api-example/models"
+	"github.com/Skyvko6607/go-api-example/repositories"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/v2/bson"

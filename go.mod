@@ -1,4 +1,4 @@
-module github.com/Skyvko6607/go-api-learning
+module github.com/Skyvko6607/go-api-example
 
 go 1.26
 
