@@ -12,12 +12,12 @@ type MongoContext struct {
 	Database *mongo.Database
 }
 
-func NewMongoContext(mongoDbUri *config.AppSettings) *MongoContext {
-	var client, err = mongo.Connect(options.Client().ApplyURI(mongoDbUri.MongoDatabase.Uri))
+func NewMongoContext(appSettings *config.AppSettings) *MongoContext {
+	var client, err = mongo.Connect(options.Client().ApplyURI(appSettings.MongoDatabase.Uri))
 	if err != nil {
 		panic(err)
 	}
-	database := client.Database("testing")
+	database := client.Database(appSettings.MongoDatabase.Database)
 	return &MongoContext{Client: client, Database: database}
 }
 

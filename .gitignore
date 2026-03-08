@@ -26,6 +26,9 @@ profile.cov
 go.work
 go.work.sum
 
+.idea
+.zed
+
 # env file
 .env
 

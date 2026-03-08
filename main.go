@@ -25,7 +25,7 @@ func main() {
 	}
 
 	var cfg config.AppSettings
-	err := toml.Unmarshal([]byte(configFile), &cfg)
+	err := toml.Unmarshal(configFile, &cfg)
 	if err != nil {
 		panic(err)
 	}

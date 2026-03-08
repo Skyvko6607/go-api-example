@@ -40,7 +40,7 @@ func (a *Auth) RenewSession(c *gin.Context, userId bson.ObjectID) (string, time.
 }
 
 func GetRedisSessionKey(userId bson.ObjectID) string {
-	return "session_" + userId.String()
+	return "session_" + userId.Hex()
 }
 
 func (a *Auth) GenerateToken(userId bson.ObjectID) (string, string, time.Duration, error) {
@@ -53,6 +53,7 @@ func (a *Auth) GenerateToken(userId bson.ObjectID) (string, string, time.Duratio
 			"exp":     time.Now().Add(duration).Unix(),
 		})
 
-	tokenString, err := token.SignedString(a.AppSettings.Auth.SecretKey)
+	println(a.AppSettings.Auth.SecretKey)
+	tokenString, err := token.SignedString([]byte(a.AppSettings.Auth.SecretKey))
 	return tokenString, jti, duration, err
 }

@@ -16,7 +16,7 @@ type UserHandler struct {
 
 func (h *UserHandler) SetupEndpoints(e *gin.Engine) {
 	e.GET("/users/:userNameOrEmail", h.GetUser)
-	e.POST("/users/:userName/:email", h.CreateUser)
+	e.POST("/users/:userName/:email/:password", h.CreateUser)
 }
 
 func (h *UserHandler) GetUser(c *gin.Context) {

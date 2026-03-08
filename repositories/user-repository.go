@@ -21,7 +21,7 @@ type UserRepository struct {
 func (r *UserRepository) FindByUserNameOrEmail(c *gin.Context, userName string, email string) (models.User, error) {
 	filter := bson.M{
 		"$or": []bson.M{
-			{"user_name_lower": strings.ToLower(userName)},
+			{"username_lower": strings.ToLower(userName)},
 			{"email": email},
 		},
 	}

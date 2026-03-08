@@ -50,7 +50,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie(h.AppSettings.Auth.CookieKey, "Bearer "+token,
+	c.SetCookie(h.AppSettings.Auth.CookieKey, token,
 		int(duration.Seconds()),
 		"/",
 		h.AppSettings.Auth.Domain,
