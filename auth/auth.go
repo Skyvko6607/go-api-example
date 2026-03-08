@@ -53,7 +53,6 @@ func (a *Auth) GenerateToken(userId bson.ObjectID) (string, string, time.Duratio
 			"exp":     time.Now().Add(duration).Unix(),
 		})
 
-	println(a.AppSettings.Auth.SecretKey)
 	tokenString, err := token.SignedString([]byte(a.AppSettings.Auth.SecretKey))
 	return tokenString, jti, duration, err
 }
