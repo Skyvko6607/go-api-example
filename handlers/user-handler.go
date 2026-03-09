@@ -3,7 +3,6 @@
 import (
 	"net/http"
 
-	"github.com/Skyvko6607/go-api-example/auth"
 	"github.com/Skyvko6607/go-api-example/services"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +10,7 @@ import (
 
 type UserHandler struct {
 	Service *services.UserService
-	Auth    *auth.Auth
+	Auth    *services.SessionService
 }
 
 func (h *UserHandler) SetupEndpoints(e *gin.Engine) {

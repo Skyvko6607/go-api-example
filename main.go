@@ -4,10 +4,10 @@ import (
 	"context"
 	"os"
 
-	"github.com/Skyvko6607/go-api-example/auth"
 	"github.com/Skyvko6607/go-api-example/config"
 	"github.com/Skyvko6607/go-api-example/database"
 	"github.com/Skyvko6607/go-api-example/handlers"
+	"github.com/Skyvko6607/go-api-example/middleware"
 	"github.com/Skyvko6607/go-api-example/repositories"
 	"github.com/Skyvko6607/go-api-example/services"
 
@@ -42,7 +42,7 @@ func main() {
 		}
 	}()
 
-	auth := &auth.Auth{RedisContext: &redisContext, AppSettings: &cfg}
+	auth := &services.SessionService{RedisContext: &redisContext, AppSettings: &cfg}
 
 	// User Setup
 	userRepo := &repositories.UserRepository{MongoContext: mongoContext}
@@ -70,8 +70,9 @@ func main() {
 	}
 	orderHandler.SetupEndpoints(r)
 
-	authHandler := &handlers.AuthHandler{Auth: auth, Repo: userRepo, AppSettings: &cfg}
+	authHandler := &handlers.AuthHandler{Session: auth, Repo: userRepo, AppSettings: &cfg}
 	authHandler.SetupEndpoints(r)
 
+	r.Use(middleware.GetAuthMiddleware(auth))
 	r.Run(":8080")
 }
