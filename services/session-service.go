@@ -30,12 +30,16 @@ func (a *SessionService) IsSessionValid(c *gin.Context, userId bson.ObjectID, jt
 }
 
 func GetUserIDFromContext(c *gin.Context) (bson.ObjectID, error) {
-	id, err := c.Get(ContextUserID)
-	if !err {
+	id, exists := c.Get(ContextUserID)
+	if !exists {
 		return bson.ObjectID{}, errors.New("user id does not exist in current session")
 	}
 
-	return id.(bson.ObjectID), nil
+	userId, err := bson.ObjectIDFromHex(id.(string))
+	if err != nil {
+		return bson.ObjectID{}, errors.New("failed to parse user id")
+	}
+	return userId, nil
 }
 
 func (a *SessionService) GetValidSession(c *gin.Context) (bson.ObjectID, error) {
